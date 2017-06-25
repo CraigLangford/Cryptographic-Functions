@@ -54,5 +54,6 @@ class PreprocessingTestCase(unittest.TestCase):
         number_of_0s = padding_data.count('0')
         self.assertEqual(len(padding_data), number_of_0s)
 
+
 if __name__ == '__main__':
     unittest.main()
