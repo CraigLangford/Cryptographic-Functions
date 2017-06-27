@@ -91,7 +91,7 @@ def _Ch(x, y, z):
 
     Ch(x, y, z) = (x ∧ y) ⊕ (¬x ∧ z)
     """
-    pass
+    return ''.join(y[i] if val == '0' else z[i] for i, val in enumerate(x))
 
 
 def _Maj(x, y, z):

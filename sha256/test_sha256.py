@@ -68,7 +68,7 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         excess_rotation = len(data) + 2
         expected_msg = "A string of length {} cannot be rotated {} positions"
         expected_msg = expected_msg.format(len(data), excess_rotation)
-        with self.assertRaisesRegexp(ValueError, expected_msg):
+        with self.assertRaisesRegex(ValueError, expected_msg):
             sha256._ROTR(data, excess_rotation)
 
     def test_SHR_shifts_string_data_to_the_right_n_units(self):
@@ -82,8 +82,21 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         excess_rotation = len(data) + 2
         expected_msg = "A string of length {} cannot be shifted {} positions"
         expected_msg = expected_msg.format(len(data), excess_rotation)
-        with self.assertRaisesRegexp(ValueError, expected_msg):
+        with self.assertRaisesRegex(ValueError, expected_msg):
             sha256._SHR(data, excess_rotation)
+
+    def test_Ch_returns_correct_string_permutation(self):
+        """Tests sha256._Ch() to ensure string x chooses vals from y and z"""
+        string_x = '101'
+        string_y = '010'
+        string_z = '101'
+
+        self.assertEqual(
+            sha256._Ch(string_x, string_y, string_z),
+            string_z[0] + string_y[1] + string_z[2]
+        )
+        self.assertEqual(sha256._Ch('000', string_y, string_z), string_y)
+        self.assertEqual(sha256._Ch('111', string_y, string_z), string_z)
 
 
 if __name__ == '__main__':
