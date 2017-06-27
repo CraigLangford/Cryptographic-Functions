@@ -59,8 +59,18 @@ def _ROTR(x, n):
     x is a w-bit word and n is an integer with 0 ≤ n < w,
 
     ROTR_n(x) = (x >> n) ∨ (x << w - n)
+
+    args:
+        x (str): String being rotated
+        n (int): Number of positions string is being rotated
+
+    return args:
+        rotated_str (str): Rotated string
     """
-    pass
+    if n > len(x):
+        error_msg = "A string of length {} cannot be rotated {} positions"
+        raise ValueError(error_msg.format(len(x), n))
+    return x[-n:] + x[:-n]
 
 
 def _SHR(x, n):
@@ -70,7 +80,10 @@ def _SHR(x, n):
 
     SHR_n(x)=x >> n
     """
-    pass
+    if n > len(x):
+        error_msg = "A string of length {} cannot be shifted {} positions"
+        raise ValueError(error_msg.format(len(x), n))
+    return '0' * n + x[:-n]
 
 
 def _Ch(x, y, z):
