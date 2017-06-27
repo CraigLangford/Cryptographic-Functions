@@ -98,6 +98,18 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         self.assertEqual(sha256._Ch('000', string_y, string_z), string_y)
         self.assertEqual(sha256._Ch('111', string_y, string_z), string_z)
 
+    def test_Maj_returns_correct_string_permutation(self):
+        """Tests sha256._Maj() the majority of bits between x, y and z are
+           returned
+        """
+        majority_str = string_x = string_y = '101'
+        string_z = '010'
+
+        self.assertEqual(
+            sha256._Maj(string_x, string_y, string_z),
+            majority_str
+        )
+
 
 if __name__ == '__main__':
     unittest.main()

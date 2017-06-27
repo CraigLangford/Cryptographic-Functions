@@ -99,7 +99,8 @@ def _Maj(x, y, z):
 
     Maj(x, y, z) = (x ∧ y) ⊕ (x ∧ z) ⊕ ( y ∧ z)
     """
-    pass
+    return ''.join('1' if bits.count('1') >= 2 else '0'
+                   for bits in zip(x, y, z))
 
 
 def _Epsilon_0(x):
