@@ -3,8 +3,19 @@ import unittest
 import sha256
 
 
-class StrToBinTestCase(unittest.TestCase):
-    """Tests the sha256._str_to_bin() function"""
+class Sha256TestCase(unittest.TestCase):
+    """Tests the sha256.sha256() function based on results from the original
+       NSA paper from:
+
+       http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA256.pdf
+    """
+    input_message = "abc"
+    output_hash = sha256.sha256(input_message)
+    print(output_hash)
+
+
+class ConversionTestCase(unittest.TestCase):
+    """Tests the sha256 conversion functions function"""
 
     def test_str_to_bin_takes_str(self):
         """Ensure _str_to_bin takes a string to process"""
@@ -27,6 +38,22 @@ class StrToBinTestCase(unittest.TestCase):
         binary_representation = sha256._str_to_bin(unicode_10084)
         unicode_10084_binary = bin(10084)[2:]
         self.assertEqual(binary_representation, unicode_10084_binary)
+
+    def test_hex_to_bin_takes_hex_string_and_converts_it_to_bin_string(self):
+        """Ensure the sha256._hex_to_bin() function takes a hex and returns its
+           coordinating binary format
+        """
+        hex_value = '4d2'
+        expected_bin = '010011010010'
+        self.assertEqual(sha256._hex_to_bin(hex_value), expected_bin)
+
+    def test_bin_to_hex_takes_bin_string_and_converts_it_to_hex_string(self):
+        """Ensure the sha256._bin_to_hex() function takes a bin and returns its
+           coordinating hexidecimal format
+        """
+        bin_value = '010011010010'
+        expected_hex = '4d2'
+        self.assertEqual(sha256._bin_to_hex(bin_value), expected_hex)
 
 
 class PreprocessingTestCase(unittest.TestCase):

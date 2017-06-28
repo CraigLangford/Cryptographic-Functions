@@ -2,7 +2,7 @@
 
 # Initial hash values, H(0), which are the first 32 bits of the fractional
 # parts of the square roots of the first 8 prime numbers
-H_0 = [
+H = [(
     '6a09e667',
     'bb67ae85',
     '3c6ef372',
@@ -11,24 +11,33 @@ H_0 = [
     '9b05688c',
     '1f83d9ab',
     '5be0cd19',
-]
+)]
 
 
-def _str_to_bin(data_string):
-    """Returns the binary representation of a string
-    using unicode representation of the str values
+def sha256(data_string):
+    """Performs the SHA-256 algorithm on the incoming string. This is performed
+       by conberting the string to a binary string via unicode positions on
+       which the permutations are performed. The result is then converted to a
+       hexidecimal string and returned from the function
 
     args:
-        data_string (str): Incoming string to be hashed
+        data_string (str): Incoming string to be converted to SHA-256 hash
 
-    return args:
-        binary_data (str): Binary representation of the
-                           string
+    output args:
+        sha_256_hash (str): The resulting hash from the data_string in
+                            hexidecimal format
     """
-    unicode_points = [ord(char) for char in data_string]
-    binary_values = ['{0:08b}'.format(point) for point in unicode_points]
-    binary_data = ''.join(binary_values)
-    return binary_data
+    binary_string = _str_to_bin(data_string)
+    preprocessed_string = _preprocessing(binary_string)
+    #  M = [preprocessed_string[32 * i:32 * (i + 1)] for i in range(16)]
+    #  W = []
+    #  for t in range(63):
+    #      if t <= 15:
+    #          W.append(M[t])
+    #      else:
+    #          initial_result = _add_modulo(_sigma_1(W[t-2]), _sigma_0(W[t-15]))
+    #          W.append(_add_modulo(initial_result, W[t-16]))
+    #      a, b, c, d, e, f, g, h = (_hex_to_bin(val) for val in H[t])
 
 
 def _preprocessing(binary_data):
@@ -50,6 +59,38 @@ def _preprocessing(binary_data):
     data_length = '{0:064b}'.format(len(binary_data))
     padding = '0' * (512 - (len(binary_data) + 1 + 64) % 512)
     return binary_data + '1' + padding + data_length
+
+
+# Conversion functions
+def _str_to_bin(data_string):
+    """Returns the binary representation of a string
+    using unicode representation of the str values
+
+    args:
+        data_string (str): Incoming string to be hashed
+
+    return args:
+        binary_data (str): Binary representation of the
+                           string
+    """
+    unicode_points = [ord(char) for char in data_string]
+    binary_values = ['{0:08b}'.format(point) for point in unicode_points]
+    binary_data = ''.join(binary_values)
+    return binary_data
+
+
+def _hex_to_bin(hex_string):
+    """Returns the binary representation of a hexidecimal string"""
+    binary_values = ['{0:04b}'.format(int(point, 16)) for point in hex_string]
+    return ''.join(binary_values)
+
+
+def _bin_to_hex(bin_string):
+    """Returns the hexidecimal representation of a binary string"""
+    bin_vals = [bin_string[pos * 4:(pos + 1) * 4]
+                for pos in range(int(len(bin_string) / 4))]
+    hex_values = [hex(int(val, 2))[2:] for val in bin_vals]
+    return ''.join(hex_values)
 
 
 # Manipulation functions
