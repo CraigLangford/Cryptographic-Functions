@@ -128,7 +128,8 @@ def _Epsilon_1(x):
 
     ∑_256_1(x) = ROTR_6(x) ⊕ ROTR_11(x) ⊕ ROTR_25(x)
     """
-    pass
+    initial_result = _XOR(_ROTR(x, 6), _ROTR(x, 11))
+    return _XOR(initial_result, _ROTR(x, 25))
 
 
 def _sigma_0(x):
