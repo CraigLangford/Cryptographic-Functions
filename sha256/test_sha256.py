@@ -9,9 +9,11 @@ class Sha256TestCase(unittest.TestCase):
 
        http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA256.pdf
     """
-    input_message = "abc"
-    output_hash = sha256.sha256(input_message)
-    print(output_hash)
+
+    def test_abc_is_processed_same_as_NSA_example(self):
+        """Ensure abc produces the same output as from the NSA paper"""
+        input_message = "abc"
+        output_hash = sha256.sha256(input_message)
 
 
 class ConversionTestCase(unittest.TestCase):
@@ -87,9 +89,9 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
 
     def test_add_returns_added_binary_strings(self):
         """Tests sha256._add() to ensure x + y module length is returned"""
-        self.assertEqual(sha256._add_modulo('1', '1'), '0')
-        self.assertEqual(sha256._add_modulo('11', '11'), '10')
-        self.assertEqual(sha256._add_modulo('1111', '1100'), '1011')
+        self.assertEqual(sha256._add('1', '1'), '0')
+        self.assertEqual(sha256._add('11', '11'), '10')
+        self.assertEqual(sha256._add('1111', '1100'), '1011')
 
     def test_XOR_returns_exclusive_or_of_two_strings(self):
         """Tests sha256._XOR() to ensure exclusive or is returned"""
