@@ -29,15 +29,15 @@ def sha256(data_string):
     """
     binary_string = _str_to_bin(data_string)
     preprocessed_string = _preprocessing(binary_string)
-    #  M = [preprocessed_string[32 * i:32 * (i + 1)] for i in range(16)]
-    #  W = []
-    #  for t in range(63):
-    #      if t <= 15:
-    #          W.append(M[t])
-    #      else:
-    #          initial_result = _add_modulo(_sigma_1(W[t-2]), _sigma_0(W[t-15]))
-    #          W.append(_add_modulo(initial_result, W[t-16]))
-    #      a, b, c, d, e, f, g, h = (_hex_to_bin(val) for val in H[t])
+    M = [preprocessed_string[32 * i:32 * (i + 1)] for i in range(16)]
+    W = []
+    for t in range(63):
+        if t <= 15:
+            W.append(M[t])
+        else:
+            initial_result = _add_modulo(_sigma_1(W[t-2]), _sigma_0(W[t-15]))
+            W.append(_add_modulo(initial_result, W[t-16]))
+        a, b, c, d, e, f, g, h = (_hex_to_bin(val) for val in H[t])
 
 
 def _preprocessing(binary_data):
