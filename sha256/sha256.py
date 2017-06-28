@@ -41,22 +41,15 @@ def sha256(data_string):
 
     a, b, c, d, e, f, g, h = (_hex_to_bin(val) for val in H[0])
 
-    print('\n')
+    #  print('\n')
 
     for t in range(63):
         T_1 = _add(h, _Epsilon_1(e), _Ch(e, f, g), _hex_to_bin(K[t]), W[t])
         T_2 = _add(_Epsilon_0(a), _Maj(a, b, c))
 
-        h = g
-        g = f
-        f = e
-        e = _add(d, T_1)
-        d = c
-        c = b
-        b = a
-        a = _add(T_1, T_2)
+        h, g, f, e, d, c, b, a = g, f, e, _add(d, T_1), c, b, a, _add(T_1, T_2)
 
-        print(t, [_bin_to_hex(val) for val in [a, b, c, d, e, f, g, h]])
+        #  print(t, [_bin_to_hex(val) for val in [a, b, c, d, e, f, g, h]])
 
     H.append([
         _bin_to_hex(_add(a, _hex_to_bin(H[0][0]))),

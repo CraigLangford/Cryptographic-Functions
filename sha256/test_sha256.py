@@ -92,6 +92,12 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         self.assertEqual(sha256._add('1', '1'), '0')
         self.assertEqual(sha256._add('11', '11'), '10')
         self.assertEqual(sha256._add('1111', '1100'), '1011')
+        val_1 = bin(123456789)[2:]
+        val_2 = bin(123456789)[2:]
+        val_3 = bin(123456789)[2:]
+        total = bin(3 * 123456789 % (2 ** 32))[2:]
+        total = total[len(total) - len(val_1):]
+        self.assertEqual(sha256._add(val_1, val_2, val_3), total)
 
     def test_XOR_returns_exclusive_or_of_two_strings(self):
         """Tests sha256._XOR() to ensure exclusive or is returned"""
