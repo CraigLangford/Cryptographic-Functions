@@ -36,20 +36,15 @@ def sha256(data_string):
     M = [preprocessed_string[32 * i:32 * (i + 1)] for i in range(16)]
 
     W = M
-    for t in range(16, 63):
-        W.append(_add(_sigma_1(W[t-2]), W[t-7], _sigma_0(W[t-15]), W[t-16]))
-
     a, b, c, d, e, f, g, h = (_hex_to_bin(val) for val in H[0])
 
-    #  print('\n')
-
     for t in range(63):
+        if t >= 16:
+            new_W = _add(_sigma_1(W[t-2]), W[t-7], _sigma_0(W[t-15]), W[t-16])
+            W.append(new_W)
         T_1 = _add(h, _Epsilon_1(e), _Ch(e, f, g), _hex_to_bin(K[t]), W[t])
         T_2 = _add(_Epsilon_0(a), _Maj(a, b, c))
-
         h, g, f, e, d, c, b, a = g, f, e, _add(d, T_1), c, b, a, _add(T_1, T_2)
-
-        #  print(t, [_bin_to_hex(val) for val in [a, b, c, d, e, f, g, h]])
 
     H.append([
         _bin_to_hex(_add(a, _hex_to_bin(H[0][0]))),
@@ -158,9 +153,6 @@ def _ROTR(x, n):
     return args:
         rotated_str (str): Rotated string
     """
-    if n > len(x):
-        error_msg = "A string of length {} cannot be rotated {} positions"
-        raise ValueError(error_msg.format(len(x), n))
     return x[-n:] + x[:-n]
 
 
@@ -171,9 +163,6 @@ def _SHR(x, n):
 
     SHR_n(x)=x >> n
     """
-    if n > len(x):
-        error_msg = "A string of length {} cannot be shifted {} positions"
-        raise ValueError(error_msg.format(len(x), n))
     return '0' * n + x[:-n]
 
 
