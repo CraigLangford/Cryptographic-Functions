@@ -58,6 +58,13 @@ class PreprocessingTestCase(unittest.TestCase):
 class ManipulationFunctionsTestCase(unittest.TestCase):
     """Tests the sha256 manipulation function work correctly"""
 
+    def test_XOR_returns_exclusive_or_of_two_strings(self):
+        """Tests sha256._XOR() to ensure exclusive or is returned"""
+        string_x = '1100'
+        string_y = '1010'
+        expected = '0110'
+        self.assertEqual(sha256._XOR(string_x, string_y), expected)
+
     def test_ROTR_rotates_string_data_to_the_right_n_units(self):
         """Tests sha256._ROTR() to ensure data rotates to the right"""
         data = '123456789'

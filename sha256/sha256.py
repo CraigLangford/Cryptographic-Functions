@@ -53,6 +53,17 @@ def _preprocessing(binary_data):
 
 
 # Manipulation functions
+def _XOR(x, y):
+    """Takes two strings and returns their exclusive or values
+
+    eg. 1 ⊕ 1 = 0
+        1 ⊕ 0 = 1
+        0 ⊕ 1 = 1
+        0 ⊕ 0 = 0
+    """
+    return ''.join('1' if _x != _y else '0' for _x, _y in zip(x, y))
+
+
 def _ROTR(x, n):
     """The rotate right (circular right shift) operation
 
