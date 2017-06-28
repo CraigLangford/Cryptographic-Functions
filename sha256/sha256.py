@@ -53,6 +53,20 @@ def _preprocessing(binary_data):
 
 
 # Manipulation functions
+def _add_modulo(x, y):
+    """Takes two binary strings and adds them together returning the same
+       length string
+    """
+    remainder = 0
+    added_str = ''
+    for _x, _y in zip(x[::-1], y[::-1]):
+        total = int(_x) + int(_y) + remainder
+        out_bit = total % 2
+        remainder = int((total - out_bit) / 2)
+        added_str = ''.join([str(out_bit), added_str])
+    return added_str
+
+
 def _XOR(x, y):
     """Takes two strings and returns their exclusive or values
 

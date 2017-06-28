@@ -58,6 +58,12 @@ class PreprocessingTestCase(unittest.TestCase):
 class ManipulationFunctionsTestCase(unittest.TestCase):
     """Tests the sha256 manipulation function work correctly"""
 
+    def test_add_returns_added_binary_strings(self):
+        """Tests sha256._add() to ensure x + y module length is returned"""
+        self.assertEqual(sha256._add_modulo('1', '1'), '0')
+        self.assertEqual(sha256._add_modulo('11', '11'), '10')
+        self.assertEqual(sha256._add_modulo('1111', '1100'), '1011')
+
     def test_XOR_returns_exclusive_or_of_two_strings(self):
         """Tests sha256._XOR() to ensure exclusive or is returned"""
         string_x = '1100'
