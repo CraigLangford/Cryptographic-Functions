@@ -137,7 +137,8 @@ def _sigma_0(x):
 
     σ_256_0(x) = ROTR_7(x) ⊕ ROTR_18(x) ⊕ SHR_3(x)
     """
-    pass
+    initial_result = _XOR(_ROTR(x, 7), _ROTR(x, 18))
+    return _XOR(initial_result, _SHR(x, 3))
 
 
 def _sigma_1(x):

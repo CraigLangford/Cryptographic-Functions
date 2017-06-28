@@ -137,6 +137,19 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         self.assertEqual(mixed[25], '1')
         self.assertEqual(mixed.count('0'), len(string_x) - 3)
 
+    def test_sigma_0_returns_returns_correct_values(self):
+        """Testes sha256._sigma_0() to ensure single string is mixed"""
+        string_x = '1' + '0' * 25 + '1'
+        mixed = sha256._sigma_0(string_x)
+        self.assertEqual(mixed[0], '0')
+        self.assertEqual(mixed[2], '0')
+        self.assertEqual(mixed[3], '1')
+        self.assertEqual(mixed[6], '1')
+        self.assertEqual(mixed[7], '1')
+        self.assertEqual(mixed[17], '1')
+        self.assertEqual(mixed[18], '1')
+        self.assertEqual(mixed.count('0'), len(string_x) - (2 * 3 - 1))
+
 
 if __name__ == '__main__':
     unittest.main()
