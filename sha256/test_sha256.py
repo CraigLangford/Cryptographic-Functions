@@ -117,6 +117,16 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
             majority_str
         )
 
+    def test_Epsilon_0_returns_returns_correct_values(self):
+        """Testes sha256._Epsilon_0() to ensure single string is mixed"""
+        string_x = '1' + '0' * 24
+        mixed = sha256._Epsilon_0(string_x)
+        self.assertEqual(mixed[0], '0')
+        self.assertEqual(mixed[2], '1')
+        self.assertEqual(mixed[13], '1')
+        self.assertEqual(mixed[22], '1')
+        self.assertEqual(mixed.count('0'), len(string_x) - 3)
+
 
 if __name__ == '__main__':
     unittest.main()
