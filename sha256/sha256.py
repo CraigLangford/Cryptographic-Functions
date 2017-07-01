@@ -62,7 +62,7 @@ def sha256(data_string):
     return H[1]
 
 
-def _preprocessing(input_message):
+def preprocessing(input_message):
     """Prepares the binary data for the SHA-256 processing
 
     Preprocessing is performed by achieving the following 3 properties
@@ -93,125 +93,69 @@ def _preprocessing(input_message):
             for i in range(0, len(processed_values), 16)]
 
 
-def _hex_to_bin(hex_string):
-    """Returns the binary representation of a hexidecimal string"""
-    binary_values = ['{0:04b}'.format(int(point, 16)) for point in hex_string]
-    return ''.join(binary_values)
-
-
-def _bin_to_hex(bin_string):
-    """Returns the hexidecimal representation of a binary string"""
-    bin_vals = [bin_string[pos * 4:(pos + 1) * 4]
-                for pos in range(int(len(bin_string) / 4))]
-    hex_values = [hex(int(val, 2))[2:] for val in bin_vals]
-    return ''.join(hex_values)
-
-
-# Manipulation functions
-def _add(*binary_strings):
-    """Takes any number of binary strings and adds them together to find a
-       final sum
-    """
-    remainder = 0
-    added_str = ''
-    if len(binary_strings) > 3:
-        print("New sum")
-        print('\n'.join([string for string in binary_strings]))
-    for vals in list(zip(*binary_strings))[::-1]:
-        total = sum(int(val) for val in vals) + remainder
-        new_bit = total % 2
-        remainder = int((total - new_bit) / 2)
-        added_str = str(new_bit) + added_str
-        if len(binary_strings) > 3:
-            print(vals, total, new_bit, remainder, added_str)
-    if len(binary_strings) > 3:
-        print(added_str)
-    return added_str
-
-
-def _XOR(*args):
-    """Takes any number of strings and outputs their exclusive or result
-
-    eg. 1 ⊕ 1 = 0
-        1 ⊕ 0 = 1
-        0 ⊕ 1 = 1
-        0 ⊕ 0 = 0
-    """
-    return ''.join('1' if vals.count('1') % 2 == 1 else '0'
-                   for vals in zip(*args))
-
-
-def _ROTR(x, n):
+def ROTR(x, n, w):
     """The rotate right (circular right shift) operation
 
     x is a w-bit word and n is an integer with 0 ≤ n < w,
 
     ROTR_n(x) = (x >> n) ∨ (x << w - n)
-
-    args:
-        x (str): String being rotated
-        n (int): Number of positions string is being rotated
-
-    return args:
-        rotated_str (str): Rotated string
     """
-    return x[-n:] + x[:-n]
+    return (x >> n) | (x << (w - n)) % 2 ** w
 
 
-def _SHR(x, n):
+def SHR(x, n):
     """The right shift operation
 
      x is a w-bit word and n is an integer with 0 ≤ n < w
 
     SHR_n(x)=x >> n
     """
-    return '0' * n + x[:-n]
+    return x >> n
 
 
-def _Ch(x, y, z):
+def Ch(x, y, z):
     """Choose function: x chooses if value comes from y or z
 
     Ch(x, y, z) = (x ∧ y) ⊕ (¬x ∧ z)
     """
-    return ''.join(_y if _x == '0' else _z for _x, _y, _z in zip(x, y, z))
+    return (x & y) ^ (~x ^ z)
 
 
-def _Maj(x, y, z):
+def Maj(x, y, z):
     """ Majority function: False when majority are False
 
     Maj(x, y, z) = (x ∧ y) ⊕ (x ∧ z) ⊕ ( y ∧ z)
     """
-    return ''.join('1' if bits.count('1') >= 2 else '0'
-                   for bits in zip(x, y, z))
+    return (x & y) ^ (x & z) ^ (y & z)
 
 
-def _Epsilon_0(x):
+def Epsilon_0(x):
     """First rotational mixing function
 
     ∑_256_0(x) = ROTR_2(x) ⊕ ROTR_13(x) ⊕ ROTR_22(x)
     """
-    return _XOR(_ROTR(x, 2), _ROTR(x, 13), _ROTR(x, 22))
+    return ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22)
 
 
-def _Epsilon_1(x):
+def Epsilon_1(x):
     """Second rotational mixing function
 
     ∑_256_1(x) = ROTR_6(x) ⊕ ROTR_11(x) ⊕ ROTR_25(x)
     """
-    return _XOR(_ROTR(x, 6), _ROTR(x, 11), _ROTR(x, 25))
+    return ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25)
 
 
-def _sigma_0(x):
+def sigma_0(x):
     """First rotational + shifting mixing function
 
     σ_256_0(x) = ROTR_7(x) ⊕ ROTR_18(x) ⊕ SHR_3(x)
     """
-    return _XOR(_ROTR(x, 7), _ROTR(x, 18), _SHR(x, 3))
+    return ROTR(x, 7) ^ ROTR(x, 18) ^ SHR(x, 3)
 
 
-def _sigma_1(x):
+def sigma_1(x):
     """Second rotational + shifting mixing function
 
     σ_256_1(x) = ROTR_17(x) ⊕ ROTR_19(x) ⊕ SHR_10(x)
     """
-    return _XOR(_ROTR(x, 17), _ROTR(x, 19), _SHR(x, 10))
+    return ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10)

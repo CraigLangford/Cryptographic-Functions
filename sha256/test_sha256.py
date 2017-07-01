@@ -89,7 +89,7 @@ class ConversionTestCase(unittest.TestCase):
 
 
 class PreprocessingTestCase(unittest.TestCase):
-    """Tests the sha256._preprocessing() function"""
+    """Tests the sha256.preprocessing() function"""
 
     def test_preprocessing_can_handle_less_than_512_bits(self):
         """Ensure preprocessing takes a unicode string and converts it to a
@@ -99,7 +99,7 @@ class PreprocessingTestCase(unittest.TestCase):
         expected_result = [
             tuple(int(val, 16) for val in NSA_EXAMPLE_1_PREPROCESSED.split())
         ]
-        self.assertEqual(sha256._preprocessing(input_message), expected_result)
+        self.assertEqual(sha256.preprocessing(input_message), expected_result)
 
     def test_preprocessing_can_handle_more_than_512_bits(self):
         """Ensure preprocessing takes a unicode string and converts it to a
@@ -112,41 +112,20 @@ class PreprocessingTestCase(unittest.TestCase):
             tuple(int(val, 16)
                   for val in NSA_EXAMPLE_2_PREPROCESSED.split()[16:]),
         ]
-        self.assertEqual(sha256._preprocessing(input_string), expected_result)
+        self.assertEqual(sha256.preprocessing(input_string), expected_result)
 
 
 class ManipulationFunctionsTestCase(unittest.TestCase):
     """Tests the sha256 manipulation function work correctly"""
 
-    def test_add_returns_added_binary_strings(self):
-        """Tests sha256._add() to ensure x + y module length is returned"""
-        self.assertEqual(sha256._add('1', '1'), '0')
-        self.assertEqual(sha256._add('11', '11'), '10')
-        self.assertEqual(sha256._add('1111', '1100'), '1011')
-        val_1 = bin(123456789)[2:]
-        val_2 = bin(123456789)[2:]
-        val_3 = bin(123456789)[2:]
-        total = bin(3 * 123456789 % (2 ** 32))[2:]
-        total = total[len(total) - len(val_1):]
-        self.assertEqual(sha256._add(val_1, val_2, val_3), total)
-
-    def test_XOR_returns_exclusive_or_of_two_strings(self):
-        """Tests sha256._XOR() to ensure exclusive or is returned"""
-        string_x = '1100'
-        string_y = '1010'
-        expected = '0110'
-        self.assertEqual(sha256._XOR(string_x, string_y), expected)
-
-    def test_ROTR_rotates_string_data_to_the_right_n_units(self):
-        """Tests sha256._ROTR() to ensure data rotates to the right"""
-        data = '123456789'
-        data_rotated_twice = '891234567'
-        self.assertEqual(sha256._ROTR(data, 2), data_rotated_twice)
-        self.assertEqual(sha256._ROTR(data, len(data)), data)
-
-        excess_rotation = len(data) + 2
-        expected_msg = "A string of length {} cannot be rotated {} positions"
-        expected_msg = expected_msg.format(len(data), excess_rotation)
+    def test_ROTR_rotates_int_data_to_the_right_n_units(self):
+        """Tests sha256.ROTR() to ensure data rotates to the right"""
+        data = '100000100000'
+        data_rotated_twice = '001000001000'
+        self.assertEqual(
+            sha256.ROTR(int(data, 2), 2, len(data)),
+            int(data_rotated_twice, 2)
+        )
 
     def test_SHR_shifts_string_data_to_the_right_n_units(self):
         """Tests sha256._SHR() to ensure data shifts to the right"""
