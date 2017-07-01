@@ -93,14 +93,14 @@ def preprocessing(input_message):
             for i in range(0, len(processed_values), 16)]
 
 
-def ROTR(x, n, w):
+def ROTR(x, n):
     """The rotate right (circular right shift) operation
 
-    x is a w-bit word and n is an integer with 0 ≤ n < w,
+    x is a w-bit word (32 bits in sha256) and n is an integer with 0 ≤ n < w,
 
     ROTR_n(x) = (x >> n) ∨ (x << w - n)
     """
-    return (x >> n) | (x << (w - n)) % 2 ** w
+    return (x >> n) | (x << (32 - n)) & 0xffffffff
 
 
 def SHR(x, n):
@@ -115,10 +115,11 @@ def SHR(x, n):
 
 def Ch(x, y, z):
     """Choose function: x chooses if value comes from y or z
+       1 means the bit comes from y and 0 means the bit comes from z
 
     Ch(x, y, z) = (x ∧ y) ⊕ (¬x ∧ z)
     """
-    return (x & y) ^ (~x ^ z)
+    return (x & y) ^ ((x ^ 0xffffffff) & z)
 
 
 def Maj(x, y, z):

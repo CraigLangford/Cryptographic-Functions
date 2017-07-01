@@ -120,35 +120,29 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
 
     def test_ROTR_rotates_int_data_to_the_right_n_units(self):
         """Tests sha256.ROTR() to ensure data rotates to the right"""
-        data = '100000100000'
-        data_rotated_twice = '001000001000'
-        self.assertEqual(
-            sha256.ROTR(int(data, 2), 2, len(data)),
-            int(data_rotated_twice, 2)
-        )
+        data = 0b10000000000000000000000000000001
+        data_rotated_twice = 0b01100000000000000000000000000000
+        self.assertEqual(sha256.ROTR(data, 2), data_rotated_twice)
 
     def test_SHR_shifts_string_data_to_the_right_n_units(self):
         """Tests sha256.SHR() to ensure data shifts to the right"""
-        data = '10000'
-        data_shifted_twice = '100'
-
-        self.assertEqual(
-            sha256.SHR(int(data, 2), 2),
-            int(data_shifted_twice, 2)
-        )
+        data = 0b10000000000000000000000000000001
+        data_shifted_twice = 0b00100000000000000000000000000000
+        self.assertEqual(sha256.SHR(data, 2), data_shifted_twice)
 
     def test_Ch_returns_correct_string_permutation(self):
-        """Tests sha256._Ch() to ensure string x chooses vals from y and z"""
-        string_x = '101'
-        string_y = '010'
-        string_z = '101'
+        """Tests sha256.Ch() to ensure string x chooses vals from y and z"""
+        val_x = 0b11111111111111110000000000000000
+        val_y = 0b11111111111111110000000000000000
+        val_z = 0b00000000000000001111111111111111
+        expected = 0b11111111111111111111111111111111
+        self.assertEqual(sha256.Ch(val_x, val_y, val_z), expected)
 
-        self.assertEqual(
-            sha256._Ch(string_x, string_y, string_z),
-            string_z[0] + string_y[1] + string_z[2]
-        )
-        self.assertEqual(sha256._Ch('000', string_y, string_z), string_y)
-        self.assertEqual(sha256._Ch('111', string_y, string_z), string_z)
+        all_ones = 0b11111111111111111111111111111111
+        self.assertEqual(sha256.Ch(all_ones, val_y, val_z), val_y)
+
+        all_zeros = 0b00000000000000000000000000000000
+        self.assertEqual(sha256.Ch(all_zeros, val_y, val_z), val_z)
 
     def test_Maj_returns_correct_string_permutation(self):
         """Tests sha256._Maj() the majority of bits between x, y and z are
