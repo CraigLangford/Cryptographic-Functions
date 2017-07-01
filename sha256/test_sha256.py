@@ -3,12 +3,42 @@ import unittest
 import sha256
 
 
+"""
+Examples are from
+http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA256.pdf
+"""
+NSA_EXAMPLE_1 = "abc"
+NSA_EXAMPLE_1_PREPROCESSED = (
+    "61626380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 "
+    "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000018"
+)
+NSA_EXAMPLE_1_H_0 = (
+    "5D6AEBCD 6A09E667 BB67AE85 3C6EF372 FA2A4622 510E527F 9B05688C 1F83D9AB"
+)
+NSA_EXAMPLE_1_DIGEST = (
+    "BA7816BF 8F01CFEA 414140DE 5DAE2223 B00361A3 96177A9C B410FF61 F20015AD"
+)
+
+NSA_EXAMPLE_2 = "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
+NSA_EXAMPLE_2_PREPROCESSED = (
+    "61626364 62636465 63646566 64656667 65666768 66676869 6768696A 68696A6B "
+    "696A6B6C 6A6B6C6D 6B6C6D6E 6C6D6E6F 6D6E6F70 6E6F7071 80000000 00000000 "
+    "00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 "
+    "00000000 00000000 00000000 00000000 00000000 00000000 00000000 000001C0"
+)
+NSA_EXAMPLE_2_H_0 = (
+    "5D6AEBB1 6A09E667 BB67AE85 3C6EF372 FA2A4606 510E527F 9B05688C 1F83D9AB"
+)
+NSA_EXAMPLE_2_DIGEST = (
+    "248D6A61 D20638B8 E5C02693 0C3E6039 A33CE459 64FF2167 F6ECEDD4 19DB06C1"
+)
+
+
 class Sha256TestCase(unittest.TestCase):
     """Tests the sha256.sha256() function based on results from the original
-       NSA paper from:
-
-       http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA256.pdf
+       NSA examples
     """
+
 
     def test_abc_is_processed_same_as_NSA_example(self):
         """Ensure abc produces the same output as from the NSA paper"""
@@ -61,27 +91,28 @@ class ConversionTestCase(unittest.TestCase):
 class PreprocessingTestCase(unittest.TestCase):
     """Tests the sha256._preprocessing() function"""
 
-    binary_data = '1010101010101010'
+    def test_preprocessing_can_handle_less_than_512_bits(self):
+        """Ensure preprocessing takes a unicode string and converts it to a
+           list of tuples containing the desired ints
+        """
+        input_message = NSA_EXAMPLE_1
+        expected_result = [
+            tuple(int(val, 16) for val in NSA_EXAMPLE_1_PREPROCESSED.split())
+        ]
+        self.assertEqual(sha256._preprocessing(input_message), expected_result)
 
-    def test_preprocessing_appends_a_1_to_binary_data(self):
-        """Ensure a 1 is appended to the incoming data"""
-        processed_data = sha256._preprocessing(self.binary_data)
-        appended_1 = processed_data[len(self.binary_data)]
-        self.assertEqual(appended_1, '1')
-
-    def test_preprocessing_appends_length_to_end_of_binary_data(self):
-        """Ensure the length of the binary data is appended in final 64 bits"""
-        processed_data = sha256._preprocessing(self.binary_data)
-        appended_64_bits = processed_data[-64:]
-        self.assertEqual(int(appended_64_bits, 2), len(self.binary_data))
-
-    def test_preprocessing_includes_correct_padding(self):
-        """Ensure total length of binary data is 512 bits with 0s as padding"""
-        processed_data = sha256._preprocessing(self.binary_data)
-        self.assertEqual(len(processed_data) % 512, 0)
-        padding_data = processed_data[len(self.binary_data) + 1:-64]
-        number_of_0s = padding_data.count('0')
-        self.assertEqual(len(padding_data), number_of_0s)
+    def test_preprocessing_can_handle_more_than_512_bits(self):
+        """Ensure preprocessing takes a unicode string and converts it to a
+           list of tuples containing the desired ints
+        """
+        input_string = NSA_EXAMPLE_2
+        expected_result = [
+            tuple(int(val, 16)
+                  for val in NSA_EXAMPLE_2_PREPROCESSED.split()[:16]),
+            tuple(int(val, 16)
+                  for val in NSA_EXAMPLE_2_PREPROCESSED.split()[16:]),
+        ]
+        self.assertEqual(sha256._preprocessing(input_string), expected_result)
 
 
 class ManipulationFunctionsTestCase(unittest.TestCase):

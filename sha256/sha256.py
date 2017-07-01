@@ -42,9 +42,12 @@ def sha256(data_string):
         if t >= 16:
             new_W = _add(_sigma_1(W[t-2]), W[t-7], _sigma_0(W[t-15]), W[t-16])
             W.append(new_W)
-        T_1 = _add(h, _Epsilon_1(e), _Ch(e, f, g), _hex_to_bin(K[t]), W[t])
-        T_2 = _add(_Epsilon_0(a), _Maj(a, b, c))
-        h, g, f, e, d, c, b, a = g, f, e, _add(d, T_1), c, b, a, _add(T_1, T_2)
+        T1 = _add(h, _Epsilon_1(e), _Ch(e, f, g), _hex_to_bin(K[t]), W[t])
+        T2 = _add(_Epsilon_0(a), _Maj(a, b, c))
+        a, b, c, d, e, f, g, h = _add(T1, T2), a, b, c, _add(d, T1), e, f, g
+        if t == 0:
+            print('\n')
+            print(' '.join([_bin_to_hex(val) for val in [a, b, c, d, e, f, g, h]]))
 
     H.append([
         _bin_to_hex(_add(a, _hex_to_bin(H[0][0]))),
@@ -59,43 +62,35 @@ def sha256(data_string):
     return H[1]
 
 
-def _preprocessing(binary_data):
+def _preprocessing(input_message):
     """Prepares the binary data for the SHA-256 processing
 
     Preprocessing is performed by achieving the following 3 properties
-    1. A 1 is appended to the binary data
-    2. A 64 bit representation of the length of the binary data is
+    1. The string is converted to binary data
+    2. A 1 is appended to the binary data
+    3. A 64 bit representation of the length of the binary data is
        appended to the data
-    3. 1 and 2 are separated by 0s until a total binary_data length of
+    4. 1 and 2 are separated by 0s until a total binary_data length of
        a multiple of 512 bits is achieved
+    5. Blocks of 512 bits are converted to 16 ints and returned as a list
 
     args:
-        binary_data (str): Incoming binary string to be preprocessed
+        input_message (str): Incoming binary string to be preprocessed
 
     return args:
-        preprocessed_data (str): Data ready for SHA-256 processing
+        preprocessed_data (list(tuples(int,),)):
+            Data ready for SHA-256 processing
     """
-    data_length = '{0:064b}'.format(len(binary_data))
-    padding = '0' * (512 - (len(binary_data) + 1 + 64) % 512)
-    return binary_data + '1' + padding + data_length
-
-
-# Conversion functions
-def _str_to_bin(data_string):
-    """Returns the binary representation of a string
-    using unicode representation of the str values
-
-    args:
-        data_string (str): Incoming string to be hashed
-
-    return args:
-        binary_data (str): Binary representation of the
-                           string
-    """
-    unicode_points = [ord(char) for char in data_string]
+    unicode_points = [ord(char) for char in input_message]
     binary_values = ['{0:08b}'.format(point) for point in unicode_points]
     binary_data = ''.join(binary_values)
-    return binary_data
+    data_length = '{0:064b}'.format(len(binary_data))
+    padding = '0' * (512 - (len(binary_data) + 1 + 64) % 512)
+    binary_string = binary_data + '1' + padding + data_length
+    processed_values = [int(binary_string[i:i + 32], 2)
+                        for i in range(0, len(binary_string), 32)]
+    return [tuple(processed_values[i:i + 16])
+            for i in range(0, len(processed_values), 16)]
 
 
 def _hex_to_bin(hex_string):
@@ -119,11 +114,18 @@ def _add(*binary_strings):
     """
     remainder = 0
     added_str = ''
+    if len(binary_strings) > 3:
+        print("New sum")
+        print('\n'.join([string for string in binary_strings]))
     for vals in list(zip(*binary_strings))[::-1]:
         total = sum(int(val) for val in vals) + remainder
         new_bit = total % 2
         remainder = int((total - new_bit) / 2)
         added_str = str(new_bit) + added_str
+        if len(binary_strings) > 3:
+            print(vals, total, new_bit, remainder, added_str)
+    if len(binary_strings) > 3:
+        print(added_str)
     return added_str
 
 
