@@ -155,14 +155,14 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
 
     def test_Epsilon_0_returns_returns_correct_values(self):
         """Testes sha256.Epsilon_0() to ensure single string is mixed"""
-        string_x = 0b10000000000000000000000000000000
-        expected = 0b00100000000001000000001000000000
+        string_x = 0b10000000000000000000000000000001
+        expected = 0b01100000000011000000011000000000
         self.assertEqual(sha256.Epsilon_0(string_x), expected)
 
     def test_Epsilon_1_returns_returns_correct_values(self):
         """Testes sha256.Epsilon_1() to ensure single string is mixed"""
-        string_x = 0b10000000000000000000000000000000
-        expected = 0b00000010000100000000000001000000
+        string_x = 0b10000000000000000000000000000001
+        expected = 0b00000110001100000000000011000000
         self.assertEqual(sha256.Epsilon_1(string_x), expected)
 
     def test_sigma_0_returns_returns_correct_values(self):
