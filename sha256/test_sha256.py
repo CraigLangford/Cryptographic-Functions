@@ -148,28 +148,21 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         """Tests sha256._Maj() the majority of bits between x, y and z are
            returned
         """
-        majority_str = string_x = string_y = '101'
-        string_z = '010'
+        majority_val = val_x = val_y = 0b101
+        val_z = 0b010
 
-        self.assertEqual(
-            sha256._Maj(string_x, string_y, string_z),
-            majority_str
-        )
+        self.assertEqual(sha256.Maj(val_x, val_y, val_z), majority_val)
 
     def test_Epsilon_0_returns_returns_correct_values(self):
-        """Testes sha256._Epsilon_0() to ensure single string is mixed"""
-        string_x = '1' + '0' * 25
-        mixed = sha256._Epsilon_0(string_x)
-        self.assertEqual(mixed[0], '0')
-        self.assertEqual(mixed[2], '1')
-        self.assertEqual(mixed[13], '1')
-        self.assertEqual(mixed[22], '1')
-        self.assertEqual(mixed.count('0'), len(string_x) - 3)
+        """Testes sha256.Epsilon_0() to ensure single string is mixed"""
+        string_x = 0b10000000000000000000000000000000
+        expected = 0b00100000000001000000001000000000
+        self.assertEqual(sha256.Epsilon_0(string_x), expected)
 
     def test_Epsilon_1_returns_returns_correct_values(self):
-        """Testes sha256._Epsilon_1() to ensure single string is mixed"""
+        """Testes sha256.Epsilon_1() to ensure single string is mixed"""
         string_x = '1' + '0' * 25
-        mixed = sha256._Epsilon_1(string_x)
+        mixed = sha256.Epsilon_1(string_x)
         self.assertEqual(mixed[0], '0')
         self.assertEqual(mixed[6], '1')
         self.assertEqual(mixed[11], '1')
