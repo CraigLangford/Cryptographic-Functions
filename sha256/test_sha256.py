@@ -128,16 +128,14 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         )
 
     def test_SHR_shifts_string_data_to_the_right_n_units(self):
-        """Tests sha256._SHR() to ensure data shifts to the right"""
-        data = '123456789'
-        data_shifted_twice = '001234567'
+        """Tests sha256.SHR() to ensure data shifts to the right"""
+        data = '10000'
+        data_shifted_twice = '100'
 
-        self.assertEqual(sha256._SHR(data, 2), data_shifted_twice)
-        self.assertEqual(sha256._SHR(data, len(data)), '0' * len(data))
-
-        excess_rotation = len(data) + 2
-        expected_msg = "A string of length {} cannot be shifted {} positions"
-        expected_msg = expected_msg.format(len(data), excess_rotation)
+        self.assertEqual(
+            sha256.SHR(int(data, 2), 2),
+            int(data_shifted_twice, 2)
+        )
 
     def test_Ch_returns_correct_string_permutation(self):
         """Tests sha256._Ch() to ensure string x chooses vals from y and z"""
