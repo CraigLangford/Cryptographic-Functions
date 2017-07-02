@@ -30,11 +30,11 @@ def sha256(input_message):
        hexidecimal string and returned from the function
 
     args:
-        data_string (str): Incoming string to be converted to SHA-256 hash
+        input_message (str): Incoming string to be converted to SHA-256 digest
 
     output args:
-        sha_256_hash (str): The resulting hash from the data_string in
-                            hexidecimal format
+        sha_256_digest (str):
+            The resulting hash from the data_string in hexidecimal format
     """
     M = preprocess_data(input_message)
     for i in range(len(M)):
