@@ -2,23 +2,28 @@
 
 # Initial hash values, H(0), which are the first 32 bits of the fractional
 # parts of the square roots of the first 8 prime numbers
-H = ["""
-     6a09e667 bb67ae85 3c6ef372 a54ff53a 510e527f 9b05688c 1f83d9ab 5be0cd19
+H = [[int(val, 16) for val in """
+      6a09e667 bb67ae85 3c6ef372 a54ff53a 510e527f 9b05688c 1f83d9ab 5be0cd19
+      """.split()]]
+
+K = [int(val, 16) for val in
+     """
+     428a2f98 71374491 b5c0fbcf e9b5dba5 3956c25b 59f111f1 923f82a4 ab1c5ed5
+     d807aa98 12835b01 243185be 550c7dc3 72be5d74 80deb1fe 9bdc06a7 c19bf174
+     e49b69c1 efbe4786 0fc19dc6 240ca1cc 2de92c6f 4a7484aa 5cb0a9dc 76f988da
+     983e5152 a831c66d b00327c8 bf597fc7 c6e00bf3 d5a79147 06ca6351 14292967
+     27b70a85 2e1b2138 4d2c6dfc 53380d13 650a7354 766a0abb 81c2c92e 92722c85
+     a2bfe8a1 a81a664b c24b8b70 c76c51a3 d192e819 d6990624 f40e3585 106aa070
+     19a4c116 1e376c08 2748774c 34b0bcb5 391c0cb3 4ed8aa4a 5b9cca4f 682e6ff3
+     748f82ee 78a5636f 84c87814 8cc70208 90befffa a4506ceb bef9a3f7 c67178f2
      """.split()]
 
-K = """
-    428a2f98 71374491 b5c0fbcf e9b5dba5 3956c25b 59f111f1 923f82a4 ab1c5ed5
-    d807aa98 12835b01 243185be 550c7dc3 72be5d74 80deb1fe 9bdc06a7 c19bf174
-    e49b69c1 efbe4786 0fc19dc6 240ca1cc 2de92c6f 4a7484aa 5cb0a9dc 76f988da
-    983e5152 a831c66d b00327c8 bf597fc7 c6e00bf3 d5a79147 06ca6351 14292967
-    27b70a85 2e1b2138 4d2c6dfc 53380d13 650a7354 766a0abb 81c2c92e 92722c85
-    a2bfe8a1 a81a664b c24b8b70 c76c51a3 d192e819 d6990624 f40e3585 106aa070
-    19a4c116 1e376c08 2748774c 34b0bcb5 391c0cb3 4ed8aa4a 5b9cca4f 682e6ff3
-    748f82ee 78a5636f 84c87814 8cc70208 90befffa a4506ceb bef9a3f7 c67178f2
-    """.split()
+
+def cut(x):
+    return x & 0xffffffff
 
 
-def sha256(data_string):
+def sha256(input_message):
     """Performs the SHA-256 algorithm on the incoming string. This is performed
        by conberting the string to a binary string via unicode positions on
        which the permutations are performed. The result is then converted to a
@@ -31,38 +36,33 @@ def sha256(data_string):
         sha_256_hash (str): The resulting hash from the data_string in
                             hexidecimal format
     """
-    binary_string = _str_to_bin(data_string)
-    preprocessed_string = _preprocessing(binary_string)
-    M = [preprocessed_string[32 * i:32 * (i + 1)] for i in range(16)]
+    M = preprocess_data(input_message)
+    a, b, c, d, e, f, g, h = H[0]
 
-    W = M
-    a, b, c, d, e, f, g, h = (_hex_to_bin(val) for val in H[0])
-
-    for t in range(63):
+    W = list(M[0])
+    for t in range(64):
         if t >= 16:
-            new_W = _add(_sigma_1(W[t-2]), W[t-7], _sigma_0(W[t-15]), W[t-16])
-            W.append(new_W)
-        T1 = _add(h, _Epsilon_1(e), _Ch(e, f, g), _hex_to_bin(K[t]), W[t])
-        T2 = _add(_Epsilon_0(a), _Maj(a, b, c))
-        a, b, c, d, e, f, g, h = _add(T1, T2), a, b, c, _add(d, T1), e, f, g
-        if t == 0:
-            print('\n')
-            print(' '.join([_bin_to_hex(val) for val in [a, b, c, d, e, f, g, h]]))
+            new_W = sigma_1(W[t-2]) + W[t-7] + sigma_0(W[t-15]) + W[t-16]
+            W.append(cut(new_W))
+        T1 = cut(h + Epsilon_1(e) + Ch(e, f, g) + K[t] + W[t])
+        T2 = cut(Epsilon_0(a) + Maj(a, b, c))
+        a, b, c, d, e, f, g, h = cut(T1 + T2), a, b, c, cut(d + T1), e, f, g
 
     H.append([
-        _bin_to_hex(_add(a, _hex_to_bin(H[0][0]))),
-        _bin_to_hex(_add(b, _hex_to_bin(H[0][1]))),
-        _bin_to_hex(_add(c, _hex_to_bin(H[0][2]))),
-        _bin_to_hex(_add(d, _hex_to_bin(H[0][3]))),
-        _bin_to_hex(_add(e, _hex_to_bin(H[0][4]))),
-        _bin_to_hex(_add(f, _hex_to_bin(H[0][5]))),
-        _bin_to_hex(_add(g, _hex_to_bin(H[0][6]))),
-        _bin_to_hex(_add(h, _hex_to_bin(H[0][7]))),
+        cut(a + H[0][0]),
+        cut(b + H[0][1]),
+        cut(c + H[0][2]),
+        cut(d + H[0][3]),
+        cut(e + H[0][4]),
+        cut(f + H[0][5]),
+        cut(g + H[0][6]),
+        cut(h + H[0][7]),
     ])
-    return H[1]
+
+    return ' '.join(['{:08x}'.format(val).upper() for val in H[-1]])
 
 
-def preprocessing(input_message):
+def preprocess_data(input_message):
     """Prepares the binary data for the SHA-256 processing
 
     Preprocessing is performed by achieving the following 3 properties

@@ -39,70 +39,37 @@ class Sha256TestCase(unittest.TestCase):
        NSA examples
     """
 
-
-    def test_abc_is_processed_same_as_NSA_example(self):
+    def test_NSA_example_1_is_processed_correctly(self):
         """Ensure abc produces the same output as from the NSA paper"""
-        input_message = "abc"
-        output_hash = sha256.sha256(input_message)
+        input_message = NSA_EXAMPLE_1
+        output_digest = sha256.sha256(input_message)
+        self.assertEqual(output_digest, NSA_EXAMPLE_1_DIGEST)
 
-
-class ConversionTestCase(unittest.TestCase):
-    """Tests the sha256 conversion functions function"""
-
-    def test_str_to_bin_takes_str(self):
-        """Ensure _str_to_bin takes a string to process"""
-        sha256._str_to_bin('abc')
-
-    def test_str_to_bin_returns_binary(self):
-        """Ensure _str_to_bin returns binary representation"""
-        binary_representation = sha256._str_to_bin('abc')
-        count_1s = binary_representation.count('1')
-        count_0s = binary_representation.count('0')
-        self.assertEqual(len(binary_representation), count_1s + count_0s)
-
-    def test_correct_binary_length_returned(self):
-        """Ensure _str_to_bin returns correct length of binary values"""
-        self.assertEqual(len(sha256._str_to_bin('abc')), 3 * 8)
-
-    def test_any_unicode_handled(self):
-        """Ensure _str_to_bin can handle any unicode value"""
-        unicode_10084 = '❤'
-        binary_representation = sha256._str_to_bin(unicode_10084)
-        unicode_10084_binary = bin(10084)[2:]
-        self.assertEqual(binary_representation, unicode_10084_binary)
-
-    def test_hex_to_bin_takes_hex_string_and_converts_it_to_bin_string(self):
-        """Ensure the sha256._hex_to_bin() function takes a hex and returns its
-           coordinating binary format
-        """
-        hex_value = '4d2'
-        expected_bin = '010011010010'
-        self.assertEqual(sha256._hex_to_bin(hex_value), expected_bin)
-
-    def test_bin_to_hex_takes_bin_string_and_converts_it_to_hex_string(self):
-        """Ensure the sha256._bin_to_hex() function takes a bin and returns its
-           coordinating hexidecimal format
-        """
-        bin_value = '010011010010'
-        expected_hex = '4d2'
-        self.assertEqual(sha256._bin_to_hex(bin_value), expected_hex)
+    def test_NSA_example_0_is_processed_correctly(self):
+        """Ensure abc produces the same output as from the NSA paper"""
+        input_message = NSA_EXAMPLE_2
+        output_digest = sha256.sha256(input_message)
+        self.assertEqual(output_digest, NSA_EXAMPLE_2_DIGEST)
 
 
 class PreprocessingTestCase(unittest.TestCase):
-    """Tests the sha256.preprocessing() function"""
+    """Tests the sha256.preprocess_data() function"""
 
-    def test_preprocessing_can_handle_less_than_512_bits(self):
-        """Ensure preprocessing takes a unicode string and converts it to a
+    def test_preprocess_data_can_handle_less_than_512_bits(self):
+        """Ensure preprocess_data takes a unicode string and converts it to a
            list of tuples containing the desired ints
         """
         input_message = NSA_EXAMPLE_1
         expected_result = [
             tuple(int(val, 16) for val in NSA_EXAMPLE_1_PREPROCESSED.split())
         ]
-        self.assertEqual(sha256.preprocessing(input_message), expected_result)
+        self.assertEqual(
+            sha256.preprocess_data(input_message),
+            expected_result
+        )
 
-    def test_preprocessing_can_handle_more_than_512_bits(self):
-        """Ensure preprocessing takes a unicode string and converts it to a
+    def test_preprocess_data_can_handle_more_than_512_bits(self):
+        """Ensure preprocess_data takes a unicode string and converts it to a
            list of tuples containing the desired ints
         """
         input_string = NSA_EXAMPLE_2
@@ -112,7 +79,7 @@ class PreprocessingTestCase(unittest.TestCase):
             tuple(int(val, 16)
                   for val in NSA_EXAMPLE_2_PREPROCESSED.split()[16:]),
         ]
-        self.assertEqual(sha256.preprocessing(input_string), expected_result)
+        self.assertEqual(sha256.preprocess_data(input_string), expected_result)
 
 
 class ManipulationFunctionsTestCase(unittest.TestCase):
