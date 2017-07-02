@@ -19,7 +19,8 @@ K = [int(val, 16) for val in
      """.split()]
 
 
-def cut(x):
+def h8(x):
+    """Cuts number to 8 digit hex"""
     return x & 0xffffffff
 
 
@@ -37,27 +38,28 @@ def sha256(input_message):
                             hexidecimal format
     """
     M = preprocess_data(input_message)
-    a, b, c, d, e, f, g, h = H[0]
+    for i in range(len(M)):
+        a, b, c, d, e, f, g, h = H[i]
 
-    W = list(M[0])
-    for t in range(64):
-        if t >= 16:
-            new_W = sigma_1(W[t-2]) + W[t-7] + sigma_0(W[t-15]) + W[t-16]
-            W.append(cut(new_W))
-        T1 = cut(h + Epsilon_1(e) + Ch(e, f, g) + K[t] + W[t])
-        T2 = cut(Epsilon_0(a) + Maj(a, b, c))
-        a, b, c, d, e, f, g, h = cut(T1 + T2), a, b, c, cut(d + T1), e, f, g
+        W = list(M[i])
+        for t in range(64):
+            if t >= 16:
+                new_W = sigma_1(W[t-2]) + W[t-7] + sigma_0(W[t-15]) + W[t-16]
+                W.append(h8(new_W))
+            T1 = h8(h + Epsilon_1(e) + Ch(e, f, g) + K[t] + W[t])
+            T2 = h8(Epsilon_0(a) + Maj(a, b, c))
+            a, b, c, d, e, f, g, h = h8(T1 + T2), a, b, c, h8(d + T1), e, f, g
 
-    H.append([
-        cut(a + H[0][0]),
-        cut(b + H[0][1]),
-        cut(c + H[0][2]),
-        cut(d + H[0][3]),
-        cut(e + H[0][4]),
-        cut(f + H[0][5]),
-        cut(g + H[0][6]),
-        cut(h + H[0][7]),
-    ])
+        H.append([
+            h8(a + H[i][0]),
+            h8(b + H[i][1]),
+            h8(c + H[i][2]),
+            h8(d + H[i][3]),
+            h8(e + H[i][4]),
+            h8(f + H[i][5]),
+            h8(g + H[i][6]),
+            h8(h + H[i][7]),
+        ])
 
     return ' '.join(['{:08x}'.format(val).upper() for val in H[-1]])
 
