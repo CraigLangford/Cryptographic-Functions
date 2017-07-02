@@ -102,7 +102,7 @@ def ROTR(x, n):
 
     ROTR_n(x) = (x >> n) ∨ (x << w - n)
     """
-    return (x >> n) | (x << (32 - n)) & 0xffffffff
+    return h8((x >> n) | (x << (32 - n)))
 
 
 def SHR(x, n):
@@ -127,7 +127,7 @@ def Ch(x, y, z):
 def Maj(x, y, z):
     """ Majority function: False when majority are False
 
-    Maj(x, y, z) = (x ∧ y) ⊕ (x ∧ z) ⊕ ( y ∧ z)
+    Maj(x, y, z) = (x ∧ y) ⊕ (x ∧ z) ⊕ (y ∧ z)
     """
     return (x & y) ^ (x & z) ^ (y & z)
 
