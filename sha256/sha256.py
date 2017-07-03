@@ -1,3 +1,23 @@
+#!/usr/bin/env python
+
+"""
+sha256.py: Performs the SHA-256 algorithm on an incoming string by converting
+the string to unicode points, converting the binary data to have a length of a
+multiple of 512 bits and then processing data to produce a hash digest.
+
+This algorithm was based off of the link below from which the initial values
+were taken:
+
+http://csrc.nist.gov/publications/fips/fips180-3/fips180-3_final.pdf
+"""
+
+__author__ = "Craig Langford"
+__credits__ = ["Craig Langford"]
+__license__ = "MIT"
+__version__ = "0.1"
+__maintainer__ = "Craig Langford"
+__email__ = "craigllangford@gmail.com"
+__status__ = "Beta"
 
 
 # Initial hash values, H(0), which are the first 32 bits of the fractional
@@ -163,3 +183,9 @@ def sigma_1(x):
     σ_256_1(x) = ROTR_17(x) ⊕ ROTR_19(x) ⊕ SHR_10(x)
     """
     return ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10)
+
+
+if __name__ == '__main__':
+    input_str = input("Input string: ")
+    sha256_digest = sha256(input_str)
+    print("SHA-256 digest: {}".format(sha256_digest))
