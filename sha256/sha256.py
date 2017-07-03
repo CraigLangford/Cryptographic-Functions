@@ -47,7 +47,7 @@ def h8(x):
 
 def sha256(input_message):
     """Performs the SHA-256 algorithm on the incoming string. This is performed
-       by conberting the string to a binary string via unicode positions on
+       by converting the string to a binary string via unicode positions on
        which the permutations are performed. The result is then converted to a
        hexidecimal string and returned from the function
 
