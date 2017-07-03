@@ -58,7 +58,8 @@ def sha256(input_message):
         sha_256_digest (str):
             The resulting hash from the data_string in hexidecimal format
     """
-    M = preprocess_data(input_message)
+    binary_data = str_to_bin(input_message)
+    M = preprocess_data(binary_data)
     for i in range(len(M)):
         a, b, c, d, e, f, g, h = H[i]
 
@@ -85,7 +86,23 @@ def sha256(input_message):
     return ' '.join(['{:08x}'.format(val).upper() for val in H[-1]])
 
 
-def preprocess_data(input_message):
+def str_to_bin(data_string):
+    """Returns the binary representation of a string using unicode (or ASCII)
+       representation of the string values
+
+    args:
+        data_string (str): Incoming string in unicode/ASCII format
+
+    return args:
+        binary_data (str): Binary representation of the string
+    """
+    unicode_points = [ord(char) for char in data_string]
+    binary_values = ['{0:08b}'.format(point) for point in unicode_points]
+    binary_data = ''.join(binary_values)
+    return binary_data
+
+
+def preprocess_data(binary_data):
     """Prepares the binary data for the SHA-256 processing
 
     Preprocessing is performed by achieving the following 3 properties
@@ -104,9 +121,6 @@ def preprocess_data(input_message):
         preprocessed_data (list(tuples(int,),)):
             Data ready for SHA-256 processing
     """
-    unicode_points = [ord(char) for char in input_message]
-    binary_values = ['{0:08b}'.format(point) for point in unicode_points]
-    binary_data = ''.join(binary_values)
     data_length = '{0:064b}'.format(len(binary_data))
     padding = '0' * (512 - (len(binary_data) + 1 + 64) % 512)
     binary_string = binary_data + '1' + padding + data_length

@@ -46,6 +46,32 @@ class Sha256TestCase(unittest.TestCase):
         self.assertEqual(output_digest, NSA_EXAMPLE_2_DIGEST)
 
 
+class ConversionTestCase(unittest.TestCase):
+    """Tests the sha256 conversion functions function"""
+
+    def test_str_to_bin_takes_str(self):
+        """Ensure sha256.str_to_bin() takes a string to process"""
+        sha256.str_to_bin('abc')
+
+    def test_str_to_bin_returns_binary(self):
+        """Ensure sha256.str_to_bin() returns binary representation"""
+        binary_representation = sha256.str_to_bin('abc')
+        count_1s = binary_representation.count('1')
+        count_0s = binary_representation.count('0')
+        self.assertEqual(len(binary_representation), count_1s + count_0s)
+
+    def test_correct_binary_length_returned(self):
+        """Ensure sha256.str_to_bin() returns correct length values"""
+        self.assertEqual(len(sha256.str_to_bin('abc')), 3 * 8)
+
+    def test_any_unicode_handled(self):
+        """Ensure sha256.str_to_bin() can handle any unicode value"""
+        unicode_10084 = '❤'
+        binary_representation = sha256.str_to_bin(unicode_10084)
+        unicode_10084_binary = bin(10084)[2:]
+        self.assertEqual(binary_representation, unicode_10084_binary)
+
+
 class PreprocessingTestCase(unittest.TestCase):
     """Tests the sha256.preprocess_data() function"""
 
@@ -54,11 +80,12 @@ class PreprocessingTestCase(unittest.TestCase):
            list of tuples containing the desired ints
         """
         input_message = NSA_EXAMPLE_1
+        binary_data = sha256.str_to_bin(input_message)
         expected_result = [
             tuple(int(val, 16) for val in NSA_EXAMPLE_1_PREPROCESSED.split())
         ]
         self.assertEqual(
-            sha256.preprocess_data(input_message),
+            sha256.preprocess_data(binary_data),
             expected_result
         )
 
@@ -66,14 +93,15 @@ class PreprocessingTestCase(unittest.TestCase):
         """Ensure preprocess_data takes a unicode string and converts it to a
            list of tuples containing the desired ints
         """
-        input_string = NSA_EXAMPLE_2
+        input_message = NSA_EXAMPLE_2
+        binary_data = sha256.str_to_bin(input_message)
         expected_result = [
             tuple(int(val, 16)
                   for val in NSA_EXAMPLE_2_PREPROCESSED.split()[:16]),
             tuple(int(val, 16)
                   for val in NSA_EXAMPLE_2_PREPROCESSED.split()[16:]),
         ]
-        self.assertEqual(sha256.preprocess_data(input_string), expected_result)
+        self.assertEqual(sha256.preprocess_data(binary_data), expected_result)
 
 
 class ManipulationFunctionsTestCase(unittest.TestCase):
