@@ -98,8 +98,7 @@ def str_to_bin(data_string):
     """
     unicode_points = [ord(char) for char in data_string]
     binary_values = ['{0:08b}'.format(point) for point in unicode_points]
-    binary_data = ''.join(binary_values)
-    return binary_data
+    return ''.join(binary_values)
 
 
 def preprocess_data(binary_data):
