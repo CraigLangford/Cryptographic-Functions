@@ -58,7 +58,7 @@ The project is good to go after setting up your Python environment. Just run pyt
 
 *SHA-256 bash example*
 ```bash
-$ python setup.py
+$ python sha256.py
 > Input string: abc
 > SHA-256 digest: BA7816BF 8F01CFEA 414140DE 5DAE2223 B00361A3 96177A9C B410FF61 F20015AD
 ```
