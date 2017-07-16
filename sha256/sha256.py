@@ -40,7 +40,7 @@ K_hex = """
 K = [int(val, 16) for val in K_hex.split()]
 
 
-def h8(x):
+def hex8(x):
     """Cuts number to 8 digit hex"""
     return x & 0xffffffff
 
@@ -67,20 +67,21 @@ def sha256(input_message):
         for t in range(64):
             if t >= 16:
                 new_W = sigma_1(W[t-2]) + W[t-7] + sigma_0(W[t-15]) + W[t-16]
-                W.append(h8(new_W))
-            T1 = h8(h + Epsilon_1(e) + Ch(e, f, g) + K[t] + W[t])
-            T2 = h8(Epsilon_0(a) + Maj(a, b, c))
-            a, b, c, d, e, f, g, h = h8(T1 + T2), a, b, c, h8(d + T1), e, f, g
+                W.append(hex8(new_W))
+            T1 = hex8(h + Epsilon_1(e) + Ch(e, f, g) + K[t] + W[t])
+            T2 = hex8(Epsilon_0(a) + Maj(a, b, c))
+            e, f, g, h = hex8(d + T1), e, f, g
+            a, b, c, d = hex8(T1 + T2), a, b, c
 
         H.append([
-            h8(a + H[i][0]),
-            h8(b + H[i][1]),
-            h8(c + H[i][2]),
-            h8(d + H[i][3]),
-            h8(e + H[i][4]),
-            h8(f + H[i][5]),
-            h8(g + H[i][6]),
-            h8(h + H[i][7]),
+            hex8(a + H[i][0]),
+            hex8(b + H[i][1]),
+            hex8(c + H[i][2]),
+            hex8(d + H[i][3]),
+            hex8(e + H[i][4]),
+            hex8(f + H[i][5]),
+            hex8(g + H[i][6]),
+            hex8(h + H[i][7]),
         ])
 
     return ' '.join(['{:08x}'.format(val).upper() for val in H[-1]])
@@ -136,7 +137,7 @@ def ROTR(x, n):
 
     ROTR_n(x) = (x >> n) ∨ (x << w - n)
     """
-    return h8((x >> n) | (x << (32 - n)))
+    return hex8((x >> n) | (x << (32 - n)))
 
 
 def SHR(x, n):
