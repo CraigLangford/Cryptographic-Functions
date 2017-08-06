@@ -76,8 +76,9 @@ class PreprocessingTestCase(unittest.TestCase):
     """Tests the sha256.preprocess_data() function"""
 
     def test_preprocess_data_can_handle_less_than_512_bits(self):
-        """Ensure preprocess_data takes a unicode string and converts it to a
-           list of tuples containing the desired ints
+        """
+        Ensure preprocess_data takes a unicode string and converts it to
+        a list of tuples containing the desired ints
         """
         input_message = NSA_EXAMPLE_1
         binary_data = sha256.str_to_bin(input_message)
@@ -90,8 +91,9 @@ class PreprocessingTestCase(unittest.TestCase):
         )
 
     def test_preprocess_data_can_handle_more_than_512_bits(self):
-        """Ensure preprocess_data takes a unicode string and converts it to a
-           list of tuples containing the desired ints
+        """
+        Ensure preprocess_data takes a unicode string and converts it to
+        a list of tuples containing the desired ints
         """
         input_message = NSA_EXAMPLE_2
         binary_data = sha256.str_to_bin(input_message)
@@ -120,7 +122,9 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         self.assertEqual(sha256.SHR(data, 2), data_shifted_twice)
 
     def test_Ch_returns_correct_string_permutation(self):
-        """Tests sha256.Ch() to ensure string x chooses vals from y and z"""
+        """
+        Tests sha256.Ch() to ensure string x chooses vals from y and z
+        """
         val_x = 0b11111111111111110000000000000000
         val_y = 0b11111111111111110000000000000000
         val_z = 0b00000000000000001111111111111111
@@ -134,8 +138,9 @@ class ManipulationFunctionsTestCase(unittest.TestCase):
         self.assertEqual(sha256.Ch(all_zeros, val_y, val_z), val_z)
 
     def test_Maj_returns_correct_string_permutation(self):
-        """Tests sha256._Maj() the majority of bits between x, y and z are
-           returned
+        """
+        Tests sha256._Maj() the majority of bits between x, y and z are
+        returned
         """
         majority_val = val_x = val_y = 0b101
         val_z = 0b010

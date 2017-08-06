@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 """
-sha256.py: Performs the SHA-256 algorithm on an incoming string by converting
-the string to unicode points, converting the binary data to have a length of a
-multiple of 512 bits and then processing data to produce a hash digest.
+sha256.py: Performs the SHA-256 algorithm on an incoming string by
+converting the string to unicode points, converting the binary data to
+have a length of a multiple of 512 bits and then processing data to
+produce a hash digest.
 
-This algorithm was based off of the link below from which the initial values
-were taken:
+This algorithm was based off of the link below from which the initial
+values were taken:
 
 http://csrc.nist.gov/publications/fips/fips180-3/fips180-3_final.pdf
 """
@@ -20,8 +21,8 @@ __email__ = "craigllangford@gmail.com"
 __status__ = "Beta"
 
 
-# Initial hash values, H(0), which are the first 32 bits of the fractional
-# parts of the square roots of the first 8 prime numbers
+# Initial hash values, H(0), which are the first 32 bits of the
+# fractional parts of the square roots of the first 8 prime numbers
 H_hex = """
         6a09e667 bb67ae85 3c6ef372 a54ff53a 510e527f 9b05688c 1f83d9ab 5be0cd19
         """
@@ -46,17 +47,20 @@ def hex8(x):
 
 
 def sha256(input_message):
-    """Performs the SHA-256 algorithm on the incoming string. This is performed
-       by converting the string to a binary string via unicode positions on
-       which the permutations are performed. The result is then converted to a
-       hexidecimal string and returned from the function
+    """Performs the SHA-256 algorithm on the incoming string.
+
+    This is performed by converting the string to a binary string via
+    unicode positions on which the permutations are performed. The
+    result is then converted to a hexidecimal string and returned from
+    the function
 
     args:
-        input_message (str): Incoming string to be converted to SHA-256 digest
+        input_message (str):
+            Incoming string to be converted to SHA-256 digest
 
     output args:
         sha_256_digest (str):
-            The resulting hash from the data_string in hexidecimal format
+            The resulting hash from data string in hexidecimal format
     """
     binary_data = str_to_bin(input_message)
     M = preprocess_data(binary_data)
@@ -66,30 +70,24 @@ def sha256(input_message):
         W = list(M[i])
         for t in range(64):
             if t >= 16:
-                new_W = sigma_1(W[t-2]) + W[t-7] + sigma_0(W[t-15]) + W[t-16]
+                new_W = sigma_1(W[t - 2]) + W[t - 7] + sigma_0(W[t - 15]) + W[t - 16]
                 W.append(hex8(new_W))
             T1 = hex8(h + Epsilon_1(e) + Ch(e, f, g) + K[t] + W[t])
             T2 = hex8(Epsilon_0(a) + Maj(a, b, c))
-            e, f, g, h = hex8(d + T1), e, f, g
-            a, b, c, d = hex8(T1 + T2), a, b, c
+            a, b, c, d, e, f, g, h = hex8(T1 + T2), a, b, c, hex8(d + T1), e, f, g
 
         H.append([
-            hex8(a + H[i][0]),
-            hex8(b + H[i][1]),
-            hex8(c + H[i][2]),
-            hex8(d + H[i][3]),
-            hex8(e + H[i][4]),
-            hex8(f + H[i][5]),
-            hex8(g + H[i][6]),
-            hex8(h + H[i][7]),
+            hex8(a + H[i][0]), hex8(b + H[i][1]), hex8(c + H[i][2]), hex8(d + H[i][3]),
+            hex8(e + H[i][4]), hex8(f + H[i][5]), hex8(g + H[i][6]), hex8(h + H[i][7]),
         ])
 
     return ' '.join(['{:08x}'.format(val).upper() for val in H[-1]])
 
 
 def str_to_bin(data_string):
-    """Returns the binary representation of a string using unicode (or ASCII)
-       representation of the string values
+    """Returns the binary representation of a string
+
+    Uses unicode (or ASCII) representation of the string values
 
     args:
         data_string (str): Incoming string in unicode/ASCII format
@@ -112,7 +110,8 @@ def preprocess_data(binary_data):
        appended to the data
     4. 1 and 2 are separated by 0s until a total binary_data length of
        a multiple of 512 bits is achieved
-    5. Blocks of 512 bits are converted to 16 ints and returned as a list
+    5. Blocks of 512 bits are converted to 16 ints and returned as a
+       list
 
     args:
         input_message (str): Incoming binary string to be preprocessed
@@ -133,7 +132,8 @@ def preprocess_data(binary_data):
 def ROTR(x, n):
     """The rotate right (circular right shift) operation
 
-    x is a w-bit word (32 bits in sha256) and n is an integer with 0 ≤ n < w,
+    x is a w-bit word (32 bits in sha256) and n is an integer with
+    0 ≤ n < w,
 
     ROTR_n(x) = (x >> n) ∨ (x << w - n)
     """
@@ -151,8 +151,10 @@ def SHR(x, n):
 
 
 def Ch(x, y, z):
-    """Choose function: x chooses if value comes from y or z
-       1 means the bit comes from y and 0 means the bit comes from z
+    """Choose function
+
+    x chooses if value comes from y or z 1 means the bit comes from y
+    and 0 means the bit comes from z
 
     Ch(x, y, z) = (x ∧ y) ⊕ (¬x ∧ z)
     """
