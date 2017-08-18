@@ -1,12 +1,17 @@
+#!/usr/bin/env python
+
+"""
+test_sha256.py: Performs tests for functionality in sha256.py. Final
+tests are based off of the results provided by the NSA these examples
+come from:
+
+http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA256.pdf
+"""
 import unittest
 
 import sha256
 
 
-"""
-Examples are from
-http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA256.pdf
-"""
 NSA_EXAMPLE_1 = "abc"
 NSA_EXAMPLE_1_PREPROCESSED = (
     "61626380 00000000 00000000 00000000 00000000 00000000 00000000 00000000 "
@@ -33,7 +38,7 @@ class Sha256TestCase(unittest.TestCase):
        NSA examples
     """
 
-    def test_NSA_example_1_is_processed_correctly(self):
+    def test_nsa_example_one_is_processed_correctly(self):
         """Ensure abc produces the same output as from the NSA paper"""
         input_message = NSA_EXAMPLE_1
         output_digest = sha256.sha256(input_message)

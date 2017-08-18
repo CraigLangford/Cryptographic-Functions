@@ -23,12 +23,12 @@ __status__ = "Beta"
 
 # Initial hash values, H(0), which are the first 32 bits of the
 # fractional parts of the square roots of the first 8 prime numbers
-H_hex = """
+H_HEX = """
         6a09e667 bb67ae85 3c6ef372 a54ff53a 510e527f 9b05688c 1f83d9ab 5be0cd19
         """
-H = [[int(val, 16) for val in H_hex.split()]]
+H = [[int(val, 16) for val in H_HEX.split()]]
 
-K_hex = """
+K_HEX = """
         428a2f98 71374491 b5c0fbcf e9b5dba5 3956c25b 59f111f1 923f82a4 ab1c5ed5
         d807aa98 12835b01 243185be 550c7dc3 72be5d74 80deb1fe 9bdc06a7 c19bf174
         e49b69c1 efbe4786 0fc19dc6 240ca1cc 2de92c6f 4a7484aa 5cb0a9dc 76f988da
@@ -38,12 +38,12 @@ K_hex = """
         19a4c116 1e376c08 2748774c 34b0bcb5 391c0cb3 4ed8aa4a 5b9cca4f 682e6ff3
         748f82ee 78a5636f 84c87814 8cc70208 90befffa a4506ceb bef9a3f7 c67178f2
         """
-K = [int(val, 16) for val in K_hex.split()]
+K = [int(val, 16) for val in K_HEX.split()]
 
 
-def hex8(x):
+def hex8(number):
     """Cuts number to 8 digit hex"""
-    return x & 0xffffffff
+    return number & 0xffffffff
 
 
 def sha256(input_message):
@@ -64,10 +64,10 @@ def sha256(input_message):
     """
     binary_data = str_to_bin(input_message)
     M = preprocess_data(binary_data)
-    for i in range(len(M)):
+    for i, M_i in enumerate(M):
         a, b, c, d, e, f, g, h = H[i]
 
-        W = list(M[i])
+        W = list(M_i)
         for t in range(64):
             if t >= 16:
                 new_W = sigma_1(W[t - 2]) + W[t - 7] + sigma_0(W[t - 15]) + W[t - 16]
