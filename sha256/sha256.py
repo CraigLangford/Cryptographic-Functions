@@ -11,6 +11,7 @@ values were taken:
 
 http://csrc.nist.gov/publications/fips/fips180-3/fips180-3_final.pdf
 """
+from typing import List, Tuple
 
 __author__ = "Craig Langford"
 __credits__ = ["Craig Langford"]
@@ -46,7 +47,7 @@ def hex8(number):
     return number & 0xffffffff
 
 
-def sha256(input_message):
+def sha256(input_message: str, input_type: str) -> str:
     """Performs the SHA-256 algorithm on the incoming string.
 
     This is performed by converting the string to a binary string via
@@ -55,14 +56,21 @@ def sha256(input_message):
     the function
 
     args:
-        input_message (str):
+        input_message:
             Incoming string to be converted to SHA-256 digest
+        input_type:
+            Either 'string' or 'int'. If string the data is converted
+            via unicode. Otherwise it is converted to an integer
+            directly
 
     output args:
-        sha_256_digest (str):
+        sha_256_digest:
             The resulting hash from data string in hexidecimal format
     """
-    binary_data = str_to_bin(input_message)
+    if input_type == 'string':
+        binary_data = str_to_bin(input_message)
+    elif input_type == 'int':
+        binary_data = int_to_bin(input_message)
     M = preprocess_data(binary_data)
     for i, M_i in enumerate(M):
         a, b, c, d, e, f, g, h = H[i]
@@ -100,7 +108,21 @@ def str_to_bin(data_string):
     return ''.join(binary_values)
 
 
-def preprocess_data(binary_data):
+def int_to_bin(data_string: str) -> str:
+    """Returns the binary representation of a integer string
+
+    First, casts the string to int and calculates from there
+
+    args:
+        data_string: Incoming string composed of values from 1 to 9
+
+    return args:
+        binary_data: Binary representation of the integer
+    """
+    return bin(int(data_string))[2:]
+
+
+def preprocess_data(binary_data: str) -> List[Tuple[int]]:
     """Prepares the binary data for the SHA-256 processing
 
     Preprocessing is performed by achieving the following 3 properties
@@ -202,6 +224,12 @@ def sigma_1(x):
 
 
 if __name__ == '__main__':
-    input_str = input("Input string: ")
-    sha256_digest = sha256(input_str)
+    input_types = {'1': 'string', '2': 'int'}
+    input_types_list = [f'[{n}] {input_type}' for n, input_type in input_types.items()]
+    print('Input types, please input number\n{}'.format('\n'.join(input_types_list)))
+    input_type = None
+    while input_type not in input_types.keys():
+        input_type = input('Input type: ')
+    input_str = input('Input {}: '.format(input_types[input_type]))
+    sha256_digest = sha256(input_str, input_types[input_type])
     print("SHA-256 digest: {}".format(sha256_digest))
