@@ -6,7 +6,7 @@ This repository is an ongoing learning experience in understanding how to implem
 
 ## Getting Started
 
-These instructions will you get a copy of the project up and running on your local machine for deployment and testing purpose. Please checkout the [blogpost on SHA-256](sha256/docs/SHA-256 Basics in Python.md) for full details of how the cryptographic function works you can also test your implementation against it!
+These instructions will you get a copy of the project up and running on your local machine for deployment and testing purpose. Please checkout the [blogpost on SHA-256](https://craigllangford.com/sha-256/) for full details of how the cryptographic function works you can also test your implementation against it!
 
 ### Prerequisites
 
